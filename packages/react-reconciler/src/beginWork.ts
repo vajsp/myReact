@@ -3,8 +3,14 @@
 import { ReactElementType } from 'shared/ReactTypes';
 import { mountChildFibers, reconcileChildFibers } from './childFibers';
 import { FiberNode } from './fiber';
+import { renderWidthHooks } from './fiberHooks';
 import { processUpateQueue, UpdateQueue } from './upDateQueue';
-import { HostComponent, HostRoot, HostText } from './workTags';
+import {
+    FunctionComponent,
+    HostComponent,
+    HostRoot,
+    HostText,
+} from './workTags';
 
 /**
  * 向下，递归中的递的阶段，做两件事
@@ -13,14 +19,18 @@ import { HostComponent, HostRoot, HostText } from './workTags';
  * @param workinProgress
  */
 export const beginWork = (workinProgress: FiberNode) => {
+    console.log('beginWork的workinProgress');
+    console.log(workinProgress);
     // 比较，返回子fiberNode
     switch (workinProgress.tag) {
         case HostRoot:
             return upDateHostRoot(workinProgress);
         case HostComponent:
-            break;
+            return updateHostComponent(workinProgress);
         case HostText:
-            break;
+            return null;
+        case FunctionComponent:
+            return updateFunctionComponent(workinProgress);
 
         default:
             if (__DEV__) {
@@ -28,9 +38,16 @@ export const beginWork = (workinProgress: FiberNode) => {
             }
             break;
     }
-
     return null;
 };
+
+function updateFunctionComponent(workinProgress: FiberNode) {
+    const nextProps = workinProgress.pendingProps;
+    const nextChildren = nextProps.children;
+    recocileChildren(workinProgress, nextChildren);
+
+    return workinProgress.child;
+}
 
 function upDateHostRoot(workinProgress: FiberNode) {
     const baseState = workinProgress.memoizedState;
@@ -47,8 +64,7 @@ function upDateHostRoot(workinProgress: FiberNode) {
 }
 
 export function updateHostComponent(workinProgress: FiberNode) {
-    const nextProps = workinProgress.pendingProps;
-    const nextChildren = nextProps.children;
+    const nextChildren = renderWidthHooks(workinProgress);
 
     recocileChildren(workinProgress, nextChildren);
     return workinProgress.child;

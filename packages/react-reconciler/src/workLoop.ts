@@ -17,6 +17,8 @@ function prepareFreshStack(root: FiberRootNode) {
 export function scheduleUpateOnFiber(fiber: FiberNode) {
     // 调度功能
     const root = markUpDateFromFiberToRoot(fiber);
+    console.log('markUpDateFromFiberToRoot');
+    console.log(root);
 
     renderRoot(root);
 }
@@ -42,6 +44,13 @@ function markUpDateFromFiberToRoot(fiber: FiberNode) {
 export function renderRoot(root: FiberRootNode) {
     // 初始化
     prepareFreshStack(root);
+
+    console.log('renderRoot的root');
+    console.log(root);
+
+    // workLoop();
+
+    // workinProgress = null;
 
     do {
         try {
@@ -98,12 +107,20 @@ function commitRoot(root: FiberRootNode) {
 
 function workLoop() {
     while (workinProgress !== null) {
+        console.log('workLoop的workinProgress');
+        console.log(workinProgress);
         performUnitOfWork(workinProgress);
     }
 }
 
 function performUnitOfWork(fiber: FiberNode) {
+    console.log('performUnitOfWork的fiber');
+    console.log(fiber);
     const next = beginWork(fiber);
+    console.log('next');
+    console.log(next);
+    debugger;
+
     fiber.memoizedProps = fiber.pendingProps;
 
     if (next === null) {
@@ -124,6 +141,9 @@ function completeUnitOfWork(fiber: FiberNode) {
             workinProgress = sibling;
             return;
         }
+
+        console.log('completeUnitOfWork的fiber');
+        console.log(node);
 
         // 如果兄弟节点不存在，递归向上
         node = node.return;

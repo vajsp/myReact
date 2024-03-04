@@ -8,7 +8,12 @@ import {
 } from 'hostConfig';
 import { FiberNode } from './fiber';
 import { NoFlags } from './fiberFlags';
-import { HostComponent, HostRoot, HostText } from './workTags';
+import {
+    FunctionComponent,
+    HostComponent,
+    HostRoot,
+    HostText,
+} from './workTags';
 
 // 需要解决的问题
 // - 对于Host类型fiberNode: 构建离屏
@@ -54,9 +59,13 @@ export const compoleteWork = (workinProgress: FiberNode) => {
         case HostRoot:
             bubbleProperties(workinProgress);
             return null;
+        case FunctionComponent:
+            bubbleProperties(workinProgress);
+            return null;
+
         default:
             if (__DEV__) {
-                console.warn('beginWork实现未知类型');
+                console.warn('compoleteWork实现未知类型');
             }
             break;
     }
