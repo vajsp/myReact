@@ -14,6 +14,7 @@
         // "pretter/pretter": "error",
         "no-case-declarations": "off",
         "no-constant-condition": "off",
-        "@typescript/ban-ts-comment": "off"
+        "@typescript/ban-ts-comment": "off",
+        "@typescript-eslint/no-explicit-any": "off"
     }
 }

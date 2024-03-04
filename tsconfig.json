@@ -1,5 +1,13 @@
 {
-    "compilerOptions": { "baseUrl": "./packages/" },
+    "compilerOptions": {
+        "baseUrl": "./packages/",
+        "target": "ES6",
+        "paths": {
+            "hostConfig": ["./react-dom/src/hostConfig.ts"]
+        },
+        "noUnusedLocals": false,
+        "noUnusedParameters": false
+    },
     "include": ["mock/**/*", "packages/**/*"],
     "exclude": [
         "node_modules",
