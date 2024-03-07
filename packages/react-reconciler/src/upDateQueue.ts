@@ -4,6 +4,7 @@ export interface IUpate<State> {
     action: Action<State>;
 }
 
+/** 消费Updata */
 export interface UpdateQueue<State> {
     shared: {
         pending: IUpate<State> | null;

@@ -16,6 +16,7 @@ export class FiberNode {
     pendingProps: Props;
     /** 确定下来的props状态 */
     memoizedProps: Props;
+    /** 在processUpateQueue中计算完成后的状态 */
     memoizedState: any;
     /** 组件的类型 FunctionComponent、classComponent、HostComponent（指的是DOM节点对应的Fiber节点） */
     tag: WorkTag;
@@ -65,7 +66,7 @@ export class FiberNode {
 
         /** 刚开始的props,新传入的 props */
         this.pendingProps = pendingProps;
-        /**  之前的 props */
+        /**  工作完之后的props */
         this.memoizedProps = null;
         /** 确定下来的state状态 */
         this.memoizedState = null;
@@ -79,6 +80,7 @@ export class FiberNode {
 }
 
 export class FiberRootNode {
+    /** fiberRootNode Container不一一定是个dom节点，不同的宿主会是不同类型，浏览器里为Element类型 */
     container: Container;
     current: FiberNode;
     finishedWork: FiberNode | null;
@@ -127,7 +129,7 @@ export function createFiberFromElement(element: ReactElementType): FiberNode {
         // div type:div
         fiberTag = HostComponent;
     } else if (typeof type !== 'function' && __DEV__) {
-        console.warn('为定义的type类型', element);
+        console.warn('未定义的type类型', element);
     }
 
     const fiber = new FiberNode(fiberTag, props, key);

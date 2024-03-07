@@ -13,12 +13,12 @@ function prepareFreshStack(root: FiberRootNode) {
     workinProgress = createWorkInProgress(root.current, {});
 }
 
-/** 调度功能 */
+/** 调度功能 在upDateContainer中调用 */
 export function scheduleUpateOnFiber(fiber: FiberNode) {
-    // 调度功能
+    // 对于 this.setState调用传入的是当前的fiberNode所以要找到原地址的fiber
     const root = markUpDateFromFiberToRoot(fiber);
-    console.log('markUpDateFromFiberToRoot');
-    console.log(root);
+    // console.log('markUpDateFromFiberToRoot');
+    // console.log(root);
 
     renderRoot(root);
 }
@@ -41,12 +41,17 @@ function markUpDateFromFiberToRoot(fiber: FiberNode) {
     return null;
 }
 
+/** renderRoot在scheduleUpateOnFiber调用
+ * scheduleUpateOnFiber在upDateContainer中调用
+ * root.ts中render调用
+ * 视频04.如何触发更新29分钟讲解流程
+ */
 export function renderRoot(root: FiberRootNode) {
     // 初始化
     prepareFreshStack(root);
 
-    console.log('renderRoot的root');
-    console.log(root);
+    // console.log('renderRoot的root');
+    // console.log(root);
 
     // workLoop();
 
@@ -55,6 +60,7 @@ export function renderRoot(root: FiberRootNode) {
     do {
         try {
             workLoop();
+            break;
         } catch (e) {
             if (__DEV__) {
                 console.log('workLoop发生错误', e);
@@ -66,6 +72,12 @@ export function renderRoot(root: FiberRootNode) {
 
     const finishedWork = root.current.alternate;
     root.finishedWork = finishedWork;
+
+    console.log('root');
+    console.log(root);
+    // console.log('finishedWork');
+    // console.log(finishedWork);
+    // debugger;
 
     // workinProgress fiberNode树中的flags
     commitRoot(root);
@@ -79,7 +91,12 @@ function commitRoot(root: FiberRootNode) {
     }
 
     if (__DEV__) {
-        console.log('commit阶段开始', finishedWork);
+        // console.log('commit阶段开始 finishedWork', finishedWork);
+        console.log(
+            `%ccommit阶段开始 finishedWork`,
+            'color: green',
+            finishedWork
+        );
     }
 
     // 重置
@@ -89,8 +106,10 @@ function commitRoot(root: FiberRootNode) {
     // root flags root subtreeFlags
     const subtreeHasEffect =
         (finishedWork.subtreeFlags & MutationMask) !== NoFlags;
-    const rootHasEffect =
-        (finishedWork.subtreeFlags & MutationMask) !== NoFlags;
+    const rootHasEffect = (finishedWork.flags & MutationMask) !== NoFlags;
+
+    // console.log('subtreeHasEffect,subtreeHasEffect');
+    // console.log(subtreeHasEffect, subtreeHasEffect);
 
     if (subtreeHasEffect || rootHasEffect) {
         //  beforeMutation
@@ -107,34 +126,38 @@ function commitRoot(root: FiberRootNode) {
 
 function workLoop() {
     while (workinProgress !== null) {
-        console.log('workLoop的workinProgress');
-        console.log(workinProgress);
+        // console.log('workLoop的workinProgress');
+        // console.log(workinProgress);
         performUnitOfWork(workinProgress);
     }
 }
 
 function performUnitOfWork(fiber: FiberNode) {
-    console.log('performUnitOfWork的fiber');
-    console.log(fiber);
+    // next可能是子fiber,也可能是null,为子fiber时继续向下遍历，为null到达最深层
     const next = beginWork(fiber);
-    console.log('next');
-    console.log(next);
-    debugger;
+
+    // debugger;
 
     fiber.memoizedProps = fiber.pendingProps;
 
     if (next === null) {
+        // console.log(`%ccompleteUnitOfWork开始的fiber`, 'color: red');
+        // console.log(fiber);
+        // 这里说的就是DFS 遍历兄弟节点
         completeUnitOfWork(fiber);
     } else {
+        // 这里说的就是DFS 有子节点遍历子节点
+        // 继续执行wookloop,继续向下遍历
         workinProgress = next;
     }
 }
 
+/** 这里说的就是DFS 遍历兄弟节点  5实现首屏渲染27分钟 */
 function completeUnitOfWork(fiber: FiberNode) {
     let node: FiberNode | null = fiber;
 
     do {
-        compoleteWork(fiber);
+        compoleteWork(node);
         const sibling = fiber.sibling;
 
         if (sibling !== null) {
@@ -142,8 +165,8 @@ function completeUnitOfWork(fiber: FiberNode) {
             return;
         }
 
-        console.log('completeUnitOfWork的fiber');
-        console.log(node);
+        // console.log('completeUnitOfWork的fiber');
+        // console.log(node);
 
         // 如果兄弟节点不存在，递归向上
         node = node.return;

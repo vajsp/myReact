@@ -23,6 +23,9 @@ export function upDateContainer(
     element: ReactElementType | null,
     root: FiberRootNode
 ) {
+    // console.log('upDateContainer element');
+    // console.log(element);
+
     const hostRootFiber = root.current;
     // reactDom.createRoot(root).render(<App />) 这里的element就是<App />
     const update = createUpate<ReactElementType | null>(element);
@@ -30,6 +33,7 @@ export function upDateContainer(
         hostRootFiber.upUateQueue as UpdateQueue<ReactElementType | null>,
         update
     );
+
     scheduleUpateOnFiber(hostRootFiber);
 
     return element;

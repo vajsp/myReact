@@ -63,6 +63,8 @@ export const jsx = (type: ElementType, config: any, ...maybeChildren) => {
         }
     }
 
+    console.log('jsx');
+
     return ReactElement(type, key, ref, props);
 };
 
@@ -91,6 +93,8 @@ export const jsxDEV = (type: ElementType, config: any) => {
             props[prop] = val;
         }
     }
+    // console.log('jsxDEV');
+    // console.log(jsxDEV);
 
     return ReactElement(type, key, ref, props);
 };

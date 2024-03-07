@@ -5,16 +5,18 @@ import { Placement } from './fiberFlags';
 import { HostText } from './workTags';
 
 /**
- *
+ * 05.实现首屏渲染 17分钟开始
  * @param shouldTrackEffects 是否追踪副作用
  * @returns
  */
 function ChildReconciler(shouldTrackEffects: boolean) {
+    /** 创建组件 */
     function reconcileSingleElement(
         returnFiber: FiberNode,
         currentFiber: FiberNode | null,
         element: ReactElementType
     ) {
+        // console.log('reconcileSingleElement');
         //根据reactElement创建fiber节点
         const fiber = createFiberFromElement(element);
         fiber.return = returnFiber;
@@ -31,10 +33,13 @@ function ChildReconciler(shouldTrackEffects: boolean) {
         return fiber;
     }
 
+    /** 是否标记副作用 */
     function placeSingleChild(fiber: FiberNode) {
         // 代表首屏渲染
         if (shouldTrackEffects && fiber.alternate === null) {
-            fiber.flags = Placement;
+            // console.log(`%cplaceSingleChild`, 'color: red');
+            // console.log(fiber);
+            fiber.flags |= Placement;
         }
 
         return fiber;
@@ -64,7 +69,7 @@ function ChildReconciler(shouldTrackEffects: boolean) {
                     break;
             }
         }
-        // 多节点的情况 ul>li*3
+        // TODO:多节点的情况 ul>li*3
 
         // hostText
         if (typeof newChild === 'string' || typeof newChild === 'number') {
