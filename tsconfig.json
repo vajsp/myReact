@@ -3,7 +3,8 @@
         "baseUrl": "./packages/",
         "target": "ES6",
         "paths": {
-            "hostConfig": ["./react-dom/src/hostConfig.ts"]
+            "hostConfig": ["./react-dom/src/hostConfig.ts"],
+            "react": ["./react/index.ts"]
         },
         "noUnusedLocals": false,
         "noUnusedParameters": false

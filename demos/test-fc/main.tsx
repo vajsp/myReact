@@ -1,16 +1,24 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 
-function App() {
-    return (
-        <div>
-            <Child />
-        </div>
-    );
-}
+// // 第一步测试
+// function App() {
+//     return (
+//         <div>
+//             <Child />
+//         </div>
+//     );
+// }
 
-function Child() {
-    return <span>big-react</span>;
+// function Child() {
+//     return <span>big-react</span>;
+// }
+
+/** useSate测试 */
+function App() {
+    const [num, setnum] = useState(100);
+    return <div>{num}</div>;
 }
 
 console.log('开始');

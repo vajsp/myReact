@@ -4,6 +4,7 @@ import { MutationMask, NoFlags, Placement } from './fiberFlags';
 import { HostComponent, HostRoot, HostText } from './workTags';
 
 let nextEffect: FiberNode | null = null;
+/** 向下遍历，然后从下向上遍历 */
 export const commitMuationEffects = (finishedWork: FiberNode) => {
     nextEffect = finishedWork;
     while (nextEffect !== null) {
@@ -32,6 +33,7 @@ export const commitMuationEffects = (finishedWork: FiberNode) => {
     }
 };
 
+/** 执行具体的Effect */
 const commitMutaitonEffectsOnFiber = (finshedWork: FiberNode) => {
     const flags = finshedWork.flags;
 
@@ -44,6 +46,7 @@ const commitMutaitonEffectsOnFiber = (finshedWork: FiberNode) => {
     }
 };
 
+/** 获得父级节点然后插入 */
 const commitPlacement = (finshedWork: FiberNode) => {
     // parent DOM
     // finishedWork ~~ DOM
@@ -82,6 +85,7 @@ function getHostParent(fiber: FiberNode): Container | null {
     return null;
 }
 
+/** 向下递归，找到HostComponent和HostText 插入*/
 function appendPlacementNodeIntorContainer(
     finishedWork: FiberNode,
     hostParent: Container

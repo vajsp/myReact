@@ -83,6 +83,13 @@ export function renderRoot(root: FiberRootNode) {
     commitRoot(root);
 }
 
+/**
+ * commit阶段要执行的两个任务
+ * 1.执行fiber树的切换
+ * 2.执行Placement对应操作
+ * @param root
+ * @returns
+ */
 function commitRoot(root: FiberRootNode) {
     // 6-1初探reactDom 19分钟理顺流程
     const finishedWork = root.finishedWork;
@@ -115,11 +122,10 @@ function commitRoot(root: FiberRootNode) {
         //  beforeMutation
         //  mutation
         commitMuationEffects(finishedWork);
-
         root.current = finishedWork;
-
         //  layout
     } else {
+        // 执行fiber树的切换
         root.current = finishedWork;
     }
 }

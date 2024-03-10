@@ -16,7 +16,7 @@ export class FiberNode {
     pendingProps: Props;
     /** 确定下来的props状态 */
     memoizedProps: Props;
-    /** 在processUpateQueue中计算完成后的状态 */
+    /** 在processUpateQueue中计算完成后的状态, 函数组件就是hooks的链表 */
     memoizedState: any;
     /** 组件的类型 FunctionComponent、classComponent、HostComponent（指的是DOM节点对应的Fiber节点） */
     tag: WorkTag;

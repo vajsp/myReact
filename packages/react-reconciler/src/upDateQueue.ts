@@ -1,3 +1,4 @@
+import { Dispatch } from 'react/src/currentDispatcher';
 import { Action } from 'shared/ReactTypes';
 
 export interface IUpate<State> {
@@ -9,6 +10,8 @@ export interface UpdateQueue<State> {
     shared: {
         pending: IUpate<State> | null;
     };
+    // hook
+    dispatch: Dispatch<State> | null;
 }
 
 /** 更新的数据结构 */
@@ -24,6 +27,7 @@ export const createUpateQueue = <State>() => {
         shared: {
             pending: null,
         },
+        dispatch: null,
     } as UpdateQueue<State>;
 };
 
