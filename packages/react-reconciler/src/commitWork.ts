@@ -1,7 +1,23 @@
-import { appendChildToContainer, Container } from 'hostConfig';
+import {
+    appendChildToContainer,
+    commitUpate,
+    Container,
+    removeChild,
+} from 'hostConfig';
 import { FiberNode, FiberRootNode } from './fiber';
-import { MutationMask, NoFlags, Placement } from './fiberFlags';
-import { HostComponent, HostRoot, HostText } from './workTags';
+import {
+    ChildDeletion,
+    MutationMask,
+    NoFlags,
+    Placement,
+    Update,
+} from './fiberFlags';
+import {
+    FunctionComponent,
+    HostComponent,
+    HostRoot,
+    HostText,
+} from './workTags';
 
 let nextEffect: FiberNode | null = null;
 /** 向下遍历，然后从下向上遍历 */
@@ -44,7 +60,97 @@ const commitMutaitonEffectsOnFiber = (finshedWork: FiberNode) => {
         // flags Update
         // flags ChildDeletion
     }
+
+    if ((flags & Update) !== NoFlags) {
+        commitUpate(finshedWork);
+        // 移除
+        finshedWork.flags &= ~Update;
+    }
+
+    if ((flags & ChildDeletion) !== NoFlags) {
+        const deletions = finshedWork.deletions;
+        if (deletions !== null) {
+            deletions.forEach((childToDelete) => {
+                commitDeletion(childToDelete);
+            });
+        }
+    }
 };
+
+/** 10-2 4:37分 */
+function commitDeletion(childToDelete: FiberNode) {
+    //   对于标记ChildDeletion的子树，由于子树中:
+    // 对于FC，需要处理useEffect unmout执行解绑ref
+    // 对于HostComponent,需要解绑ref
+    // 对于子树的 [根HostComponentJ ，需要移除DOM
+
+    let rootHostNode: FiberNode | null = null;
+
+    // 递归子树
+    commitNestedComponent(childToDelete, (unmountFiber) => {
+        switch (unmountFiber.tag) {
+            case HostComponent:
+                if (rootHostNode === null) {
+                    rootHostNode = unmountFiber;
+                }
+                //  TODO:解绑ref
+                break;
+            case HostText:
+                if (rootHostNode === null) {
+                    rootHostNode = unmountFiber;
+                }
+                //  TODO:解绑ref
+                return;
+            case FunctionComponent:
+                // TODO:useEffect unmount
+                return;
+            default:
+                if (__DEV__) {
+                    console.warn('未处理的unmount类型', unmountFiber);
+                }
+                break;
+        }
+    });
+
+    // 移除rootHostComponent的Dom
+    if (rootHostNode !== null) {
+        const hostParent = getHostParent(childToDelete);
+        if (hostParent !== null) {
+            removeChild(rootHostNode as any, hostParent);
+        }
+    }
+    childToDelete.return = null;
+    childToDelete.child = null;
+}
+
+function commitNestedComponent(
+    root: FiberNode,
+    onCommitUnount: (fiber: FiberNode) => void
+) {
+    let node = root;
+    while (true) {
+        onCommitUnount(node);
+        if (node.child !== null) {
+            // 向下遍历
+            node.child.return = node;
+            node = node.child;
+            continue;
+        }
+        if (node === root) {
+            // 终止条件
+            return;
+        }
+        while (node.sibling === null) {
+            if (node.return === null || node.return === root) {
+                return;
+            }
+            // 向上归
+            node = node.return;
+        }
+        node.sibling.return = node.return;
+        node = node.sibling;
+    }
+}
 
 /** 获得父级节点然后插入 */
 const commitPlacement = (finshedWork: FiberNode) => {

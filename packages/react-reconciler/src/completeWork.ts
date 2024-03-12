@@ -7,13 +7,17 @@ import {
     createTextInstance,
 } from 'hostConfig';
 import { FiberNode } from './fiber';
-import { NoFlags } from './fiberFlags';
+import { NoFlags, Update } from './fiberFlags';
 import {
     FunctionComponent,
     HostComponent,
     HostRoot,
     HostText,
 } from './workTags';
+
+function markUpdate(fiber: FiberNode) {
+    fiber.flags |= Update;
+}
 
 // compoleteWork需要解决的问题
 // - 对于Host类型fiberNode: 构建离屏DOM树
@@ -59,6 +63,11 @@ export const compoleteWork = (workinProgress: FiberNode) => {
             if (current !== null && workinProgress.stateNode) {
                 // updata
                 // 这里workinProgress.stateNode存的是dom节点
+                const oldText = current.memoizedProps.content;
+                const newText = newProps.content;
+                if (oldText !== newText) {
+                    markUpdate(workinProgress);
+                }
             } else {
                 // 构建离屏dom树
                 // 1.构建Dom

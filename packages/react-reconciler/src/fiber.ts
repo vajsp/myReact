@@ -41,6 +41,8 @@ export class FiberNode {
     subtreeFlags: Flags;
     /** 更新队列，用于暂存 setState 的值 */
     upUateQueue: any;
+    /** update时要删除的子节点 */
+    deletions: FiberNode[] | null;
 
     constructor(tag: WorkTag, pendingProps: Props, key: Key) {
         // 实力
@@ -76,6 +78,7 @@ export class FiberNode {
         /** 副作用,保存本次更新会造成的DOM操作。比如删除，移动 */
         this.flags = NoFlags;
         this.subtreeFlags = NoFlags;
+        this.deletions = null;
     }
 }
 
@@ -110,6 +113,7 @@ export const createWorkInProgress = (
         workinProgress.pendingProps = pendingProps;
         workinProgress.flags = NoFlags;
         workinProgress.subtreeFlags = NoFlags;
+        workinProgress.deletions = null;
     }
 
     workinProgress.type = current.type;
