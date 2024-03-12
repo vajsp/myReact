@@ -9,7 +9,7 @@
         "noUnusedLocals": false,
         "noUnusedParameters": false
     },
-    "include": ["mock/**/*", "packages/**/*"],
+    "include": ["./packages/**/*"],
     "exclude": [
         "node_modules",
         "build",

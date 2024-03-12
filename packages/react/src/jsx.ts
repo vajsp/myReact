@@ -28,6 +28,14 @@ export const ReactElement = function (
     return element;
 };
 
+export function isValidElementFn(object: any) {
+    return (
+        typeof object === 'object' &&
+        object !== null &&
+        object.$$typeof === REACT_ELEMENT_TYPE
+    );
+}
+
 export const jsx = (type: ElementType, config: any, ...maybeChildren) => {
     let key: Key = null;
     const props: Props = {};

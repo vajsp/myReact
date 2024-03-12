@@ -15,7 +15,49 @@ export default [
         output: [
             {
                 file: `${pkgDistPath}/index.js`,
-                name: 'index.js',
+                name: 'ReactDom',
+                format: 'umd',
+            },
+            {
+                file: `${pkgDistPath}/client.js`,
+                name: 'client',
+                format: 'umd',
+            },
+        ],
+        // 排除
+        external: [...Object.keys(peerDependencies)],
+        plugins: [
+            ...getBaseRollupPlugins(),
+            // webpack resolve alias
+            alias({
+                entries: {
+                    hostConfig: `${pkgDistPath}/src/hostConfig.ts`,
+                },
+            }),
+            generatePackageJSON({
+                inputFolder: pkgPath,
+                outputFolder: pkgDistPath,
+                baseContents: ({ name, description, version }) => {
+                    return {
+                        name,
+                        description,
+                        version,
+                        main: 'index.js',
+                        peerDependencies: {
+                            react: version,
+                        },
+                    };
+                },
+            }),
+        ],
+    },
+    // react-test-utils
+    {
+        input: `${pkgPath}/test-utils.ts`,
+        output: [
+            {
+                file: `${pkgDistPath}/test-utils.js`,
+                name: 'testUtils',
                 format: 'umd',
             },
             {
@@ -25,7 +67,7 @@ export default [
             },
         ],
         // 排除
-        external: [...Object.keys(peerDependencies)],
+        external: ['react-dom', 'react'],
         plugins: [
             ...getBaseRollupPlugins(),
             // webpack resolve alias

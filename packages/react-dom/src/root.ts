@@ -15,7 +15,7 @@ export function createRoot(container: Container) {
             // console.log('element');
             // console.log(element);
 
-            upDateContainer(element, root);
+            return upDateContainer(element, root);
         },
     };
 }
