@@ -11,14 +11,17 @@ import ReactDOM from 'react-dom/client';
 //     );
 // }
 
-// function Child() {
-//     return <span>big-react</span>;
-// }
+function Child() {
+    return <span>big-react</span>;
+}
 
 /** useSate测试 */
 function App() {
     const [num, setnum] = useState(100);
-    return <div>{num}</div>;
+    window.setnum = setnum;
+
+    // return <div>{num}</div>;
+    return num === 3 ? <Child /> : <div>{num}</div>;
 }
 
 console.log('开始');
