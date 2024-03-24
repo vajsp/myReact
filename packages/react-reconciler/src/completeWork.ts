@@ -14,6 +14,7 @@ import {
     HostRoot,
     HostText,
 } from './workTags';
+import { updateFiberProps } from 'react-dom/src/SyntheticEvent';
 
 function markUpdate(fiber: FiberNode) {
     fiber.flags |= Update;
@@ -47,10 +48,11 @@ export const compoleteWork = (workinProgress: FiberNode) => {
             if (current !== null && workinProgress.stateNode) {
                 // updata
                 // 这里workinProgress.stateNode存的是dom节点
+                updateFiberProps(workinProgress.stateNode, newProps);
             } else {
                 // 构建离屏dom树
                 // 1.构建Dom
-                const instace = createInstance(workinProgress.type);
+                const instace = createInstance(workinProgress.type, newProps);
                 // const instace = createInstance(workinProgress.type, newProps);
                 // 2.将dom插入dom树中
                 appendAllChildren(instace, workinProgress);

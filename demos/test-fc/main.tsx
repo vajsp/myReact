@@ -18,10 +18,18 @@ function Child() {
 /** useSate测试 */
 function App() {
     const [num, setnum] = useState(100);
-    window.setnum = setnum;
+    // window.setnum = setnum;
 
-    // return <div>{num}</div>;
-    return num === 3 ? <Child /> : <div>{num}</div>;
+    return (
+        <div
+            onClick={() => {
+                setnum(num + 1);
+            }}
+        >
+            {num}
+        </div>
+    );
+    // return num === 3 ? <Child /> : <div>{num}</div>;
 }
 
 console.log('开始');
