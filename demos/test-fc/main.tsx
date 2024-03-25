@@ -20,13 +20,24 @@ function App() {
     const [num, setnum] = useState(100);
     // window.setnum = setnum;
 
+    const arr =
+        num % 2 === 0
+            ? [<li key={'1'}>1</li>, <li key={'2'}>2</li>, <li key={'3'}>3</li>]
+            : [
+                  <li key={'3'}>3</li>,
+                  <li key={'2'}>2</li>,
+                  <li key={'1'}>1</li>,
+              ];
+
+    console.log(arr);
+
     return (
         <div
             onClick={() => {
                 setnum(num + 1);
             }}
         >
-            {num}
+            {arr}
         </div>
     );
     // return num === 3 ? <Child /> : <div>{num}</div>;

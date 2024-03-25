@@ -89,6 +89,7 @@ function ChildReconciler(shouldTrackEffects: boolean) {
         //根据reactElement创建fiber节点
         const fiber = createFiberFromElement(element);
         fiber.return = returnFiber;
+
         return fiber;
     }
 
@@ -161,6 +162,7 @@ function ChildReconciler(shouldTrackEffects: boolean) {
                 i,
                 after
             );
+
             if (newFiber === null) {
                 continue;
             }
@@ -232,10 +234,12 @@ function ChildReconciler(shouldTrackEffects: boolean) {
             switch (element.$$typeof) {
                 case REACT_ELEMENT_TYPE:
                     // key相同 都复用
-                    if (before.type === element.type) {
+                    if (before?.type === element.type) {
                         existingChildren.delete(keyToUse);
+
                         return useFiber(before, element.props);
                     }
+
                     return createFiberFromElement(element);
             }
 
@@ -270,13 +274,16 @@ function ChildReconciler(shouldTrackEffects: boolean) {
                     }
                     break;
             }
+
             // 多节点的情况 ul>li*3
             if (Array.isArray(newChild)) {
-                return reconcileChildrenArray(
+                const data = reconcileChildrenArray(
                     returnFiber,
                     currentFiber,
                     newChild
                 );
+                console.log(data);
+                return data;
             }
         }
 
