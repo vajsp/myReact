@@ -6,6 +6,7 @@ import { FiberNode } from './fiber';
 import { renderWidthHooks } from './fiberHooks';
 import { processUpateQueue, UpdateQueue } from './upDateQueue';
 import {
+    Fragment,
     FunctionComponent,
     HostComponent,
     HostRoot,
@@ -33,6 +34,8 @@ export const beginWork = (workinProgress: FiberNode) => {
             return null;
         case FunctionComponent:
             return updateFunctionComponent(workinProgress);
+        case Fragment:
+            return updateFragment(workinProgress);
 
         default:
             if (__DEV__) {
@@ -42,6 +45,12 @@ export const beginWork = (workinProgress: FiberNode) => {
     }
     return null;
 };
+
+function updateFragment(workinProgress: FiberNode) {
+    const nextChildren = workinProgress.pendingProps;
+    recocileChildren(workinProgress, nextChildren);
+    return workinProgress.child;
+}
 
 function upDateHostRoot(workinProgress: FiberNode) {
     /** 1.计算更新状态 */

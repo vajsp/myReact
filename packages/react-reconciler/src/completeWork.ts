@@ -9,6 +9,7 @@ import {
 import { FiberNode } from './fiber';
 import { NoFlags, Update } from './fiberFlags';
 import {
+    Fragment,
     FunctionComponent,
     HostComponent,
     HostRoot,
@@ -81,9 +82,8 @@ export const compoleteWork = (workinProgress: FiberNode) => {
             bubbleProperties(workinProgress);
             return null;
         case HostRoot:
-            bubbleProperties(workinProgress);
-            return null;
         case FunctionComponent:
+        case Fragment:
             bubbleProperties(workinProgress);
             return null;
 
